@@ -3,7 +3,7 @@
     "description": "特定のURLパスにCSSを当て込む拡張機能",
     "version": "0.0.1",
     "manifest_version": 3,
-    "permissions": ["tabs"],
+    "permissions": ["tabs", "storage"],
     "options_page": "options.html",
     "content_scripts": [
         {
