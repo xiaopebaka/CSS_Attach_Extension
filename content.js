@@ -1,29 +1,44 @@
-window.addEventListener("load", function () {
+window.addEventListener("load", async function () {
   // テストデータ作成　ストレージ保存
   const sampleList = [
     {
+      id: "sqbw63ndh1kcvhqkaxe18a6475a64d",
       url: "https://github.com/*",
-      css: "body{display: flex;}",
+      css: "body{filter: blur(1px);}",
+      disable: true
     },
     {
+      id: "6rwuf2d60q9bs8ehokhu18a647625eb",
       url: "https://qiita.com/*",
-      css: "body{display: block;}",
+      css: "body{filter: contrast(0.5);}",
+      disable: false
     },
   ];
-  chrome.storage.local.set({ attachStyleList: sampleList });
+  await setStorage({ attachStyleList: sampleList });
 
   // スタイル当て込み
   attachStyle();
 });
 
-function getAttachStyleList(callback) {
-  return new Promise((resolve) => {
-    chrome.storage.local.get(["attachStyleList"], function (value) {
-      const attachStyleList = filterAttachStyleList(value.attachStyleList);
-      resolve(attachStyleList);
+function setStorage(data) {
+  return new Promise((resolve, reject) => {
+    chrome.storage.local.set(data, () => {
+      if (chrome.runtime.lastError) {
+        reject(new Error(chrome.runtime.lastError));
+      } else {
+        resolve();
+      }
     });
   });
 }
+
+chrome.runtime.onMessage.addListener((message) => {
+  if (message.type === "CONTENT") {
+    if(message.action === "UPDATE_ATTACH_STYLE") {
+      updateAttachStyle();
+    }
+  }
+})
 
 function filterAttachStyleList(attachStyleList) {
   // 現在のURLを取得
@@ -42,21 +57,30 @@ function filterAttachStyleList(attachStyleList) {
 }
 
 async function attachStyle() {
-  // chrome.storageが非同期の関係でとりあえず動くようにコードを書いてある
-  // 後で分かりやすく修正
-  getAttachStyleList().then((attachStyleList) => {
-    let stringStyle = "";
-    attachStyleList.forEach(function (row) {
+  const storageData = await chrome.storage.local.get("attachStyleList");
+  
+  const filteredAttachStyleList = filterAttachStyleList(storageData.attachStyleList);
+  let stringStyle = "";
+  filteredAttachStyleList.forEach(function (row) {
+    console.log(row)
+    if(!row.disable) {
       stringStyle += row.css;
-    });
-    insertCSS(stringStyle);
+    }
   });
+  insertCSS(stringStyle);
 }
 
 function insertCSS(stringStyle) {
   const headerElement = document.querySelector("head");
   const styleElement = document.createElement("style");
   styleElement.type = "text/css";
+  styleElement.id = "css_attach_extension"
   styleElement.textContent = stringStyle;
   headerElement.appendChild(styleElement);
+  console.log(styleElement)
+}
+
+function updateAttachStyle() {
+  document.querySelector("#css_attach_extension").remove();
+  attachStyle();
 }
