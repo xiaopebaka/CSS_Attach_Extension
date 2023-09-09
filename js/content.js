@@ -2,16 +2,22 @@ window.addEventListener("load", async function () {
   // テストデータ作成　ストレージ保存
   const sampleList = [
     {
-      id: "sqbw63ndh1kcvhqkaxe18a6475a64d",
+      id: "53552fd5-008c-443b-b1fc-c23b6e3eb2e8",
       url: "https://github.com/*",
       css: "body{filter: blur(1px);}",
       disable: true
     },
     {
-      id: "6rwuf2d60q9bs8ehokhu18a647625eb",
+      id: "4478d40c-037a-496b-9c28-37c105b4b395",
       url: "https://qiita.com/*",
       css: "body{filter: contrast(0.5);}",
-      disable: false
+      disable: true
+    },
+    {
+      id: "df4814c0-b61a-4f53-ad7c-e51852c707ad",
+      url: "https://qiita.com/official-events*",
+      css: ".mainWrapper{font-weight: bold;}",
+      disable: true
     },
   ];
   await setStorage({ attachStyleList: sampleList });
@@ -62,7 +68,6 @@ async function attachStyle() {
   const filteredAttachStyleList = filterAttachStyleList(storageData.attachStyleList);
   let stringStyle = "";
   filteredAttachStyleList.forEach(function (row) {
-    console.log(row)
     if(!row.disable) {
       stringStyle += row.css;
     }
@@ -77,7 +82,6 @@ function insertCSS(stringStyle) {
   styleElement.id = "css_attach_extension"
   styleElement.textContent = stringStyle;
   headerElement.appendChild(styleElement);
-  console.log(styleElement)
 }
 
 function updateAttachStyle() {

@@ -48,14 +48,23 @@ function insertAttachStyleDisables(attachStyleList) {
 
     const checkbox = listItem.querySelector('input[type="checkbox"]');
     checkbox.checked = !row.disable;
-    checkbox.addEventListener("click", () => {
-      changeDisabeled(row);
+    checkbox.addEventListener("click", (e) => {
+      changeDisabeled(row, e.target.checked);
     });
 
     const urlView = listItem.querySelector(".url-pattern");
     urlView.innerText = row.url;
 
-    const cssView = listItem.querySelector(".css");
+    const cssToggleButton = listItem.querySelector(".css-view .css-toggle");
+    cssToggleButton.addEventListener("click", (e) => {
+      cssTextElement = e.target.parentElement.querySelector(".css-text");
+      if (cssTextElement.classList.contains('open')) {
+        cssTextElement.classList.remove('open');
+      } else {
+        cssTextElement.classList.add('open');
+      }
+    })
+    const cssView = listItem.querySelector(".css-view .css-text");
     cssView.innerText = row.css;
 
     document.querySelector(".attach-list ul").appendChild(listItem);
@@ -74,22 +83,20 @@ function setStorage(data) {
   });
 }
 
-async function changeDisabeled(row) {
+async function changeDisabeled(row, disable) {
 	const storageData = await chrome.storage.local.get("attachStyleList");
   const newAttachStyleList = [];
   storageData.attachStyleList.forEach((obj) => {
     if (obj.id === row.id) {
-      obj.disable = !row.disable;
-			console.log("obj.disable = row.disable;")
+      obj.disable = !disable;
     }
     newAttachStyleList.push(obj);
   });
-	// なぜか一回目の切り替え時しかcontent側に反映されないため修正予定
+  
   try {
     await setStorage({ attachStyleList: newAttachStyleList });
 		chrome.storage.local.get(null, function(items) {
-			console.log(items);
-	});
+    });
     // content.jsへのアクション
     const currentTab = await getCurrentTab();
     chrome.tabs.sendMessage(currentTab.id, {
