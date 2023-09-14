@@ -1,0 +1,10 @@
+.template {
+  display: none;
+}
+
+.css-view .css-text {
+  display: none;
+}
+.css-view .css-text.open {
+  display: block;
+}
