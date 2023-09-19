@@ -1,6 +1,6 @@
 window.addEventListener("load", function () {
   document.querySelector("#to_option").addEventListener("click", function () {
-    window.open(chrome.runtime.getURL("options.html"));
+    window.open(chrome.runtime.getURL("html/options.html"));
   });
 
   displayAttachStyleList();

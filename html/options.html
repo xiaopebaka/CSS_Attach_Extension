@@ -4,23 +4,15 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <link rel="stylesheet" href="../css/options.css" />
+    <title>設定</title>
   </head>
 
   <body>
-    <div id="app">{{message}}</div>
+    <input type="text" id="urlInput" placeholder="URLを入力してください">
+    <input type="text" id="cssInput" placeholder="CSSを入力してください">
+    <button id="addButton">追加</button>
+    <ul id="attachStyleList"></ul>
   </body>
-  <script>
-    const { createApp, ref } = Vue;
-
-    createApp({
-      setup() {
-        const message = ref("Hello vue!");
-        return {
-          message,
-        };
-      },
-    }).mount("#app");
-  </script>
+  <script src="../js/options.js"></script>
 </html>
