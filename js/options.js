@@ -8,7 +8,11 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 document.querySelector("#addButton").addEventListener("click", function () {
-    addRule();
+    addAttachStyle();
+});
+
+document.querySelector("#saveButton").addEventListener("click", function () {
+    setAttachStyle();
 });
 
 class AttachStyle {
@@ -20,32 +24,65 @@ class AttachStyle {
     }
 }
 
+function addAttachStyle(){
+    const toparea = document.querySelector("#toparea");
+    toparea.insertAdjacentHTML('afterend', '<div class="attachStyle"><input type="text" class="urlInput" placeholder="URLを入力してください"><textarea class="cssTextarea" rows="1" cols="30" placeholder="CSSを入力してください"></textarea></div>');
+}
 
-async function addRule() {
-    const attachStyleList = document.querySelector("#attachStyleList");
-    let attachStyleUrl = document.querySelector("#urlInput");
-    let attachStyleCss = document.querySelector("#cssInput");
-    const urlText = attachStyleUrl.value.trim();
-    const cssText = attachStyleCss.value.trim();
+async function setAttachStyle() {
+    const inputs = document.querySelectorAll('.urlInput');
+    const textareas = document.querySelectorAll('.cssTextarea');
+    const urls = document.querySelectorAll('.url');
+    const csses = document.querySelectorAll('.css');
+    let newAttachStyleList = [];
 
-    if (urlText === "" || cssText === "") {
+    if (Array.from(inputs).some(input => !input.value.trim()) &&
+        Array.from(textareas).some(textarea => !textarea.value.trim())){
+
+    }else if (Array.from(inputs).some(input => !input.value.trim()) ||
+        Array.from(textareas).some(textarea => !textarea.value.trim())){
         window.alert("不正です");
-        return;
+    } else {
+        for (let i = 0; i < inputs.length; i++) {
+            const urlText = inputs[i].value.trim();
+            const cssText = textareas[i].value.trim();
+            const newAttachStyle = new AttachStyle();
+            newAttachStyle.url = urlText;
+            newAttachStyle.css = cssText;
+            if (newAttachStyle.uid === undefined)
+                newAttachStyle.uid = generateUUID();
+            if (newAttachStyle.uid === undefined)
+                newAttachStyle.isEnable = true;
+            newAttachStyleList.push(newAttachStyle);
+        }
     }
-    const newAttachStyle = new AttachStyle();
 
-    newAttachStyle.url = urlText;
-    newAttachStyle.css = cssText;
-    newAttachStyle.uid = generateUUID();
-    newAttachStyle.isEnable = true;
+    if (urls !== null && csses !== null){
+        if (Array.from(urls).some(url => !url.value.trim()) ||
+            Array.from(csses).some(css => !css.value.trim())){
+            window.alert("不正です");
+        } else {
+            for (let i = 0; i < urls.length; i++) {
+                const urlText = urls[i].value.trim();
+                const cssText = csses[i].value.trim();
+                const newAttachStyle = new AttachStyle();
+                newAttachStyle.url = urlText;
+                newAttachStyle.css = cssText;
+                newAttachStyle.uid = generateUUID();
+                newAttachStyle.isEnable = true;
+                newAttachStyleList.push(newAttachStyle);
+            }
+        }
+    }
 
-    createAttachStyleList(attachStyleList, newAttachStyle)
+    attachStyleListInStorage = newAttachStyleList;
+    try {
+        await setStorage({attachStyleList: attachStyleListInStorage});
+        window.alert("保存は成功しました。")
+    } catch (e) {
+        window.alert("保存は失敗しました。")
+    }
 
-    attachStyleUrl.value = "";
-    attachStyleCss.value = "";
-
-    attachStyleListInStorage.push(newAttachStyle);
-    await setStorage({attachStyleList: attachStyleListInStorage});
 }
 
 function generateUUID() {
@@ -84,51 +121,38 @@ function filterAttachStyleList(ListInStorage){
 }
 
 function loadAttachStyleList(attachStyleListInStorage){
-    const attachStyleListDom = document.querySelector("#attachStyleList");
+    const attachStyleListElement = document.querySelector("#attachStyleList");
 
     for (let attachStyleList of attachStyleListInStorage) {
-        createAttachStyleList(attachStyleListDom, attachStyleList);
+        createAttachStyleList(attachStyleListElement, attachStyleList);
     }
 }
 
-function createAttachStyleList(attachStyleListDom, attachStyle){
+function createAttachStyleList(attachStyleListElement, attachStyle){
     const li = document.createElement("li");
 
     // 追加
-    const urlSpan = document.createElement("span");
-    const cssSpan = document.createElement("span");
-    urlSpan.textContent = attachStyle.url;
-    urlSpan.contentEditable = true;
-    urlSpan.id = "url";
-    li.appendChild(urlSpan);
-    cssSpan.textContent = attachStyle.css;
-    cssSpan.contentEditable = true;
-    cssSpan.id = "css";
-    li.appendChild(cssSpan);
+    const urlInput = document.createElement("input");
+    const cssTextarea = document.createElement("textarea");
+    urlInput.type = "text";
+    urlInput.value = attachStyle.url
+    urlInput.className = "url"
+    li.appendChild(urlInput);
 
-    // 修正ボタン
-    const editBtn = document.createElement("button");
-    editBtn.textContent = "Edit";
-    editBtn.onclick = function() {
-        let editedUrl = urlSpan.textContent;
-        let editedCss = cssSpan.textContent;
-        attachStyle.url = editedUrl;
-        attachStyle.css = editedCss;
-        editAttachStyleList(attachStyle);
-    }
-
-    li.appendChild(editBtn);
+    cssTextarea.value = attachStyle.css;
+    cssTextarea.className = "css";
+    li.appendChild(cssTextarea);
 
     // 削除ボタン
     const deleteBtn = document.createElement("button");
     deleteBtn.textContent = "Delete";
     deleteBtn.onclick = function() {
-        attachStyleListDom.removeChild(li);
+        attachStyleListElement.removeChild(li);
         deleteAttachStyleList(attachStyle);
     }
     li.appendChild(deleteBtn);
 
-    attachStyleListDom.appendChild(li);
+    attachStyleListElement.appendChild(li);
 }
 
 async function deleteAttachStyleList(attachStyle) {
@@ -140,25 +164,4 @@ async function deleteAttachStyleList(attachStyle) {
             });
         }
     });
-}
-
-async function editAttachStyleList(attachStyle) {
-    chrome.storage.local.get(['attachStyleList'], function(result) {
-        if (result.attachStyleList && Array.isArray(result.attachStyleList)) {
-            const updatedList = result.attachStyleList.map(item =>{
-                if (item.uid === attachStyle.uid){
-                    item.uid = attachStyle.uid;
-                    item.url = attachStyle.url;
-                    item.css = attachStyle.css;
-                    item.isEnable = attachStyle.isEnable;
-                }
-                return item;
-            });
-
-            chrome.storage.local.set({attachStyleList: updatedList}, function() {
-                console.log('is updated');
-            });
-        }
-    });
-
 }
