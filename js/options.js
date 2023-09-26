@@ -1,38 +1,42 @@
+// ページの読み込み完了時に実行
 window.addEventListener("load", async function () {
-  const storageData = await getStorageData();
-  loadAttachStyleList(storageData);
+  // ストレージから取得したスタイルリストを表示
+  displayAttachStyleList();
 });
 
+// 追加ボタンがクリックされたときのイベントリスナー
 document.querySelector("#add-button").addEventListener("click", function () {
-  console.log("add button clicked");
   addAttachStyle();
 });
 
+// 保存ボタンがクリックされたときのイベントリスナー
 document.querySelector("#save-button").addEventListener("click", function () {
   saveAttachStyle();
 });
 
+// スタイルリストに新たなスタイルを追加する関数
 function addAttachStyle() {
   const attachStyleListElement = document.querySelector("#attach-style-list");
   const listItem = createListItemElement(null);
   attachStyleListElement.prepend(listItem);
 }
 
+// スタイルリストをストレージに保存する関数
 async function saveAttachStyle() {
   const listItems = document.querySelectorAll("#attach-style-list li:not(.template)");
   let newAttachStyleList = [];
+  let saveFlag = true;
 
-	let saveFlag = true;
   listItems.forEach((list) => {
     const enableCheck = list.querySelector(".enable").checked;
     const urlText = list.querySelector(".url-input").value.trim();
     const cssText = list.querySelector(".css-textarea").value.trim();
+
     if (!urlText || !cssText) {
-			console.log("saveFlag is false");
-			console.log(urlText, cssText)
-			saveFlag = false;
+      saveFlag = false;
       return;
     }
+
     const newAttachStyle = {
       id: generateUUID(),
       url: urlText,
@@ -42,10 +46,10 @@ async function saveAttachStyle() {
     newAttachStyleList.push(newAttachStyle);
   });
 
-	if(!saveFlag) {
-		window.alert("URLまたはCSSが未入力の項目が存在します。");
-		return;
-	}
+  if (!saveFlag) {
+    window.alert("URLまたはCSSが未入力の項目が存在します。");
+    return;
+  }
 
   try {
     await setStorage({ attachStyleList: newAttachStyleList });
@@ -55,26 +59,16 @@ async function saveAttachStyle() {
   }
 }
 
-function generateUUID() {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-}
-
-function loadAttachStyleList(storageData) {
+// スタイルリストを一覧表示する関数
+async function displayAttachStyleList() {
+  const storageData = await getStorageData();
   for (let attachStyle of storageData.attachStyleList) {
-    createAttachStyleList(attachStyle);
+    const listItem = createListItemElement(attachStyle);
+    document.querySelector("#attach-style-list").appendChild(listItem);
   }
 }
 
-function createAttachStyleList(attachStyle) {
-  const listItem = createListItemElement(attachStyle);
-  const attachStyleListElement = document.querySelector("#attach-style-list");
-  attachStyleListElement.appendChild(listItem);
-}
-
+// スタイルデータを元に、新しいリスト項目要素を作成する関数
 function createListItemElement(attachStyle) {
   if (!attachStyle) {
     attachStyle = {
@@ -88,26 +82,32 @@ function createListItemElement(attachStyle) {
   const listItem = template.cloneNode(true);
   listItem.classList.remove("template");
 
+  // アイコンを設定
   const icon = listItem.querySelector("img.icon");
   icon.src = getDefaultFaviconUrl(attachStyle.url);
 
+  // URLを設定
   const urlInput = listItem.querySelector(".url-input");
   urlInput.value = attachStyle.url;
 
+  // CSSを設定
   const cssTextarea = listItem.querySelector(".css-textarea");
   cssTextarea.value = attachStyle.css;
 
+  // 有効・無効チェックボックスを設定
   const enableCheck = listItem.querySelector(".enable");
   enableCheck.checked = attachStyle.isEnable;
 
+  // 削除ボタン設定
   const deleteButton = listItem.querySelector(".delete");
   deleteButton.onclick = function (e) {
     e.target.closest("li").remove(listItem);
   };
-  console.log(listItem);
+
   return listItem;
 }
 
+// 指定されたURLパターンから、デフォルトのfaviconのURLを取得する関数
 function getDefaultFaviconUrl(urlPattern) {
   let normalizedPattern = "";
   try {
