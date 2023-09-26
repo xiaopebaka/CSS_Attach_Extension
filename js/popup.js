@@ -35,21 +35,17 @@ async function displayAttachStyleList() {
   const storageData = await chrome.storage.local.get("attachStyleList");
   const attachStyleList = await filterAttachStyleList(storageData.attachStyleList);
 
-  insertAttachStyleDisables(attachStyleList);
-}
-
-function insertAttachStyleDisables(attachStyleList) {
-  const template = document.querySelector(".attach-list ul li.template");
+  const template = document.querySelector("#attach-style-list li.template");
 
   attachStyleList.forEach((row) => {
     const listItem = template.cloneNode(true);
     listItem.classList.add("row", "row-" + row.id);
     listItem.classList.remove("template");
 
-    const checkbox = listItem.querySelector('input[type="checkbox"]');
-    checkbox.checked = !row.disable;
+    const checkbox = listItem.querySelector(".enable");
+    checkbox.checked = row.isEnable;
     checkbox.addEventListener("click", (e) => {
-      changeDisabeled(row, e.target.checked);
+      changeDisabeled(row);
     });
 
     const urlView = listItem.querySelector(".url-pattern");
@@ -58,16 +54,16 @@ function insertAttachStyleDisables(attachStyleList) {
     const cssToggleButton = listItem.querySelector(".css-view .css-toggle");
     cssToggleButton.addEventListener("click", (e) => {
       cssTextElement = e.target.parentElement.querySelector(".css-text");
-      if (cssTextElement.classList.contains('open')) {
-        cssTextElement.classList.remove('open');
+      if (cssTextElement.classList.contains("open")) {
+        cssTextElement.classList.remove("open");
       } else {
-        cssTextElement.classList.add('open');
+        cssTextElement.classList.add("open");
       }
-    })
+    });
     const cssView = listItem.querySelector(".css-view .css-text");
     cssView.innerText = row.css;
 
-    document.querySelector(".attach-list ul").appendChild(listItem);
+    document.querySelector("#attach-style-list").appendChild(listItem);
   });
 }
 
@@ -83,21 +79,18 @@ function setStorage(data) {
   });
 }
 
-async function changeDisabeled(row, disable) {
-	const storageData = await chrome.storage.local.get("attachStyleList");
+async function changeDisabeled(row) {
+  const storageData = await chrome.storage.local.get("attachStyleList");
   const newAttachStyleList = [];
   storageData.attachStyleList.forEach((obj) => {
     if (obj.id === row.id) {
-      obj.disable = !disable;
+      obj.isEnable = !obj.isEnable;
     }
     newAttachStyleList.push(obj);
   });
-  
+
   try {
     await setStorage({ attachStyleList: newAttachStyleList });
-		chrome.storage.local.get(null, function(items) {
-    });
-    // content.jsへのアクション
     const currentTab = await getCurrentTab();
     chrome.tabs.sendMessage(currentTab.id, {
       type: "CONTENT",

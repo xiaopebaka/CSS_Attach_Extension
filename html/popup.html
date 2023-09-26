@@ -4,24 +4,33 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Popup</title>
+    <title>ポップアップ</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
     <link rel="stylesheet" href="../css/popup.css" />
   </head>
   <body>
-    <div class="wrapper" style="width: 400px">
-      <div class="attach-list">
-        <ul>
-          <li class="template">
-            <input type="checkbox" name="" id="" />
-            <div class="url-pattern"></div>
-            <div class="css-view">
-              <input type="button" value="" class="css-toggle" />
-              <div class="css-text"></div>
-            </div>
-          </li>
-        </ul>
+    <div class="container">
+      <ul id="attach-style-list" class="list-group">
+        <li class="template list-group-item">
+          <div class="form-check">
+            <input type="checkbox" class="enable form-check-input" />
+            <label class="form-check-label">Enable</label>
+          </div>
+          <div class="url-pattern mb-2"></div>
+          <div class="css-view">
+            <button type="button" class="css-toggle btn btn-outline-primary btn-sm mb-2">CSS</button>
+            <div class="css-text"></div>
+          </div>
+        </li>
+      </ul>
+      <div class="d-flex justify-content-end">
+        <input type="button" class="btn btn-primary" id="to_option" value="設定" />
       </div>
-      <input type="button" id="to_option" value="設定" />
     </div>
     <script src="../js/popup.js"></script>
   </body>

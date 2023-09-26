@@ -8,3 +8,7 @@
 .css-view .css-text.open {
   display: block;
 }
+
+body {
+  width: 480px
+}
