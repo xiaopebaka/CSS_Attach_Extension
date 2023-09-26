@@ -2,18 +2,6 @@ window.addEventListener("load", async function () {
   attachStyle();
 });
 
-function setStorage(data) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set(data, () => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError));
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "CONTENT") {
     if (message.action === "UPDATE_ATTACH_STYLE") {
@@ -22,26 +10,10 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
-function filterAttachStyleList(attachStyleList) {
-  // 現在のURLを取得
-  const currentURL = window.location.href;
-
-  // 一致するパターンを格納する配列
-  const matchingPatterns = [];
-
-  attachStyleList.forEach((attachStyle) => {
-    const regexPattern = new RegExp(attachStyle.url);
-    if (regexPattern.test(currentURL)) {
-      matchingPatterns.push(attachStyle);
-    }
-  });
-  return matchingPatterns;
-}
-
 async function attachStyle() {
   const storageData = await chrome.storage.local.get("attachStyleList");
 
-  const filteredAttachStyleList = filterAttachStyleList(storageData.attachStyleList);
+  const filteredAttachStyleList = await filterAttachStyleList(storageData.attachStyleList);
   let stringStyle = "";
   filteredAttachStyleList.forEach(function (row) {
     if (row.isEnable) {

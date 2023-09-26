@@ -6,33 +6,12 @@ window.addEventListener("load", function () {
   displayAttachStyleList();
 });
 
-async function getCurrentTab() {
-  return new Promise((resolve, reject) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError));
-      } else {
-        resolve(tabs[0]);
-      }
-    });
-  });
-}
-
-async function filterAttachStyleList(attachStyleList) {
-  const currentTab = await getCurrentTab();
-  const matchingPatterns = [];
-
-  attachStyleList.forEach((attachStyle) => {
-    const regexPattern = new RegExp(attachStyle.url);
-    if (regexPattern.test(currentTab.url)) {
-      matchingPatterns.push(attachStyle);
-    }
-  });
-  return matchingPatterns;
+async function getStorage() {
+  return await chrome.storage.local.get("attachStyleList");
 }
 
 async function displayAttachStyleList() {
-  const storageData = await chrome.storage.local.get("attachStyleList");
+  const storageData = await getStorage();
   const attachStyleList = await filterAttachStyleList(storageData.attachStyleList);
 
   const template = document.querySelector("#attach-style-list li.template");
@@ -64,18 +43,6 @@ async function displayAttachStyleList() {
     cssView.innerText = row.css;
 
     document.querySelector("#attach-style-list").appendChild(listItem);
-  });
-}
-
-function setStorage(data) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set(data, () => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError));
-      } else {
-        resolve();
-      }
-    });
   });
 }
 

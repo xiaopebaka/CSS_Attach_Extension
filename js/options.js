@@ -1,9 +1,6 @@
-let attachStyleListInStorage;
-
 window.addEventListener("load", async function () {
-  await chrome.storage.local.get(["attachStyleList"], function (result) {
-    attachStyleListInStorage = filterAttachStyleList(result.attachStyleList);
-    loadAttachStyleList(attachStyleListInStorage);
+  await chrome.storage.local.get(["attachStyleList"], async function (result) {
+    loadAttachStyleList(result.attachStyleList);
   });
 });
 
@@ -15,15 +12,6 @@ document.querySelector("#add-button").addEventListener("click", function () {
 document.querySelector("#save-button").addEventListener("click", function () {
   saveAttachStyle();
 });
-
-class AttachStyle {
-  constructor() {
-    this.id = generateUUID();
-    this.url = null;
-    this.css = null;
-    this.isEnable = true;
-  }
-}
 
 function addAttachStyle() {
   const attachStyleListElement = document.querySelector("#attach-style-list");
@@ -42,10 +30,12 @@ async function saveAttachStyle() {
     if (!urlText || !cssText) {
       return;
     }
-    const newAttachStyle = new AttachStyle();
-    newAttachStyle.url = urlText;
-    newAttachStyle.css = cssText;
-    newAttachStyle.isEnable = enableCheck;
+    const newAttachStyle = {
+      id: generateUUID(),
+      url: urlText,
+      css: cssText,
+      isEnable: enableCheck,
+    };
     if (!newAttachStyle.id) {
       newAttachStyle.id = generateUUID();
     }
@@ -68,35 +58,9 @@ function generateUUID() {
   });
 }
 
-function setStorage(data) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set(data, () => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError));
-      } else {
-        resolve();
-      }
-    });
-  });
-}
-
-function filterAttachStyleList(ListInStorage) {
-  const attachStyleList = [];
-  if (ListInStorage != null) {
-    for (let list of ListInStorage) {
-      const attachStyle = new AttachStyle();
-      attachStyle.id = list.id;
-      attachStyle.url = list.url;
-      attachStyle.css = list.css;
-      attachStyle.isEnable = list.isEnable;
-      attachStyleList.push(attachStyle);
-    }
-  }
-  return attachStyleList;
-}
-
-function loadAttachStyleList(attachStyleListInStorage) {
-  for (let attachStyle of attachStyleListInStorage) {
+function loadAttachStyleList(storageData) {
+  console.log(storageData);
+  for (let attachStyle of storageData) {
     createAttachStyleList(attachStyle);
   }
 }
@@ -109,7 +73,12 @@ function createAttachStyleList(attachStyle) {
 
 function createListItemElement(attachStyle) {
   if (!attachStyle) {
-    attachStyle = new AttachStyle();
+    attachStyle = {
+      id: generateUUID(),
+      url: "",
+      css: "",
+      isEnable: true,
+    };
   }
   const template = document.querySelector("#attach-style-list li.template");
   const listItem = template.cloneNode(true);
