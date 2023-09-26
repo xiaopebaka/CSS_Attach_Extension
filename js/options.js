@@ -139,10 +139,10 @@ function getDefaultFaviconUrl(urlPattern) {
   let normalizedPattern = "";
   try {
     normalizedPattern = urlPattern.replace(/^\*:\/\//, "http://");
+    const urlObj = new URL(normalizedPattern);
+    return `${urlObj.protocol}//${urlObj.hostname}/favicon.ico`;
   } catch (e) {
-    console.log(e, "\n" + "URLパターンを通常のURLに変換できませんでした。");
+    console.log(e, "URLパターンを通常のURLに変換できませんでした。");
     return "";
   }
-  const urlObj = new URL(normalizedPattern);
-  return `${urlObj.protocol}//${urlObj.hostname}/favicon.ico`;
 }
