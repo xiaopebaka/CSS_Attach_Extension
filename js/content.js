@@ -11,7 +11,7 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 async function attachStyle() {
-  const storageData = await chrome.storage.local.get("attachStyleList");
+  const storageData = await getStorageData();
 
   const filteredAttachStyleList = await filterAttachStyleList(storageData.attachStyleList);
   let stringStyle = "";

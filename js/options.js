@@ -1,7 +1,6 @@
 window.addEventListener("load", async function () {
-  await chrome.storage.local.get(["attachStyleList"], async function (result) {
-    loadAttachStyleList(result.attachStyleList);
-  });
+  const storageData = await getStorageData();
+  loadAttachStyleList(storageData);
 });
 
 document.querySelector("#add-button").addEventListener("click", function () {
@@ -20,14 +19,18 @@ function addAttachStyle() {
 }
 
 async function saveAttachStyle() {
-  const listItems = document.querySelectorAll("#attach-style-list li");
+  const listItems = document.querySelectorAll("#attach-style-list li:not(.template)");
   let newAttachStyleList = [];
 
+	let saveFlag = true;
   listItems.forEach((list) => {
     const enableCheck = list.querySelector(".enable").checked;
     const urlText = list.querySelector(".url-input").value.trim();
     const cssText = list.querySelector(".css-textarea").value.trim();
     if (!urlText || !cssText) {
+			console.log("saveFlag is false");
+			console.log(urlText, cssText)
+			saveFlag = false;
       return;
     }
     const newAttachStyle = {
@@ -36,11 +39,13 @@ async function saveAttachStyle() {
       css: cssText,
       isEnable: enableCheck,
     };
-    if (!newAttachStyle.id) {
-      newAttachStyle.id = generateUUID();
-    }
     newAttachStyleList.push(newAttachStyle);
   });
+
+	if(!saveFlag) {
+		window.alert("URLまたはCSSが未入力の項目が存在します。");
+		return;
+	}
 
   try {
     await setStorage({ attachStyleList: newAttachStyleList });
@@ -59,8 +64,7 @@ function generateUUID() {
 }
 
 function loadAttachStyleList(storageData) {
-  console.log(storageData);
-  for (let attachStyle of storageData) {
+  for (let attachStyle of storageData.attachStyleList) {
     createAttachStyleList(attachStyle);
   }
 }

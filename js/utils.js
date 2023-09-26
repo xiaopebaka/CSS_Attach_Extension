@@ -1,3 +1,7 @@
+async function getStorageData() {
+  return await chrome.storage.local.get("attachStyleList");
+}
+
 function setStorage(data) {
   return new Promise((resolve, reject) => {
     chrome.storage.local.set(data, () => {

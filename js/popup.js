@@ -6,12 +6,8 @@ window.addEventListener("load", function () {
   displayAttachStyleList();
 });
 
-async function getStorage() {
-  return await chrome.storage.local.get("attachStyleList");
-}
-
 async function displayAttachStyleList() {
-  const storageData = await getStorage();
+  const storageData = await getStorageData();
   const attachStyleList = await filterAttachStyleList(storageData.attachStyleList);
 
   const template = document.querySelector("#attach-style-list li.template");
@@ -47,7 +43,7 @@ async function displayAttachStyleList() {
 }
 
 async function changeDisabeled(row) {
-  const storageData = await chrome.storage.local.get("attachStyleList");
+  const storageData = await getStorageData();
   const newAttachStyleList = [];
   storageData.attachStyleList.forEach((obj) => {
     if (obj.id === row.id) {
