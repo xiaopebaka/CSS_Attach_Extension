@@ -21,6 +21,8 @@ async function filterAttachStyleList(attachStyleList) {
   const currentTab = await getCurrentTab();
   const matchingPatterns = [];
 
+  if (!attachStyleList) return;
+  
   attachStyleList.forEach((attachStyle) => {
     const regexPattern = new RegExp(attachStyle.url);
     if (regexPattern.test(currentTab.url)) {

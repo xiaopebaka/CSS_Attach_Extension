@@ -17,7 +17,9 @@ async function displayAttachStyleList() {
   const attachStyleList = await filterAttachStyleList(storageData.attachStyleList);
 
   const template = document.querySelector("#attach-style-list li.template");
-
+  
+  if (!attachStyleList) return;
+  
   attachStyleList.forEach((row) => {
     // テンプレートをクローンして新しいリスト項目を作成
     const listItem = template.cloneNode(true);

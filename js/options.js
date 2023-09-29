@@ -65,6 +65,9 @@ async function saveAttachStyle() {
 // スタイルリストを一覧表示する関数
 async function displayAttachStyleList() {
   const storageData = await getStorageData();
+
+  if (!storageData.attachStyleList) return;
+  
   for (let attachStyle of storageData.attachStyleList) {
     const listItem = createListItemElement(attachStyle);
     document.querySelector("#attach-style-list").appendChild(listItem);
