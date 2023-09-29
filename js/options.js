@@ -27,11 +27,13 @@ async function saveAttachStyle() {
   let newAttachStyleList = [];
   let saveFlag = true;
 
+  // スタイルデータの数だけ繰り返しストレージ保存用オブジェクトを作成する
   listItems.forEach((list) => {
     const enableCheck = list.querySelector(".enable").checked;
     const urlText = list.querySelector(".url-input").value.trim();
     const cssText = list.querySelector(".css-textarea").value.trim();
 
+    // 入力済みかチェックする
     if (!urlText || !cssText) {
       saveFlag = false;
       return;
@@ -46,6 +48,7 @@ async function saveAttachStyle() {
     newAttachStyleList.push(newAttachStyle);
   });
 
+  // 未入力がある場合アラートを表示する
   if (!saveFlag) {
     window.alert("URLまたはCSSが未入力の項目が存在します。");
     return;

@@ -1,3 +1,4 @@
+// Chrome拡張機能のメッセージリスナーを追加
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "GET_CURRENT_TAB") {
     getCurrentTab()
@@ -11,6 +12,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
+// 現在のアクティブなタブを取得する
 async function getCurrentTab() {
   return new Promise((resolve, reject) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
