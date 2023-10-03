@@ -31,7 +31,7 @@ async function displayAttachStyleList() {
     checkbox.checked = row.isEnable;
     checkbox.addEventListener("click", (e) => {
       // チェックボックスがクリックされたときに状態を変更
-      changeDisabeled(row);
+      changeEnabled(row);
     });
 
     // URLを設定
@@ -59,9 +59,9 @@ async function displayAttachStyleList() {
 }
 
 // 指定されたアタッチスタイルの有効/無効状態を変更する関数
-async function changeDisabeled(row) {
+async function changeEnabled(row) {
   // ストレージからデータを取得
-  const storageData = await getStorageData();
+  const storageData = await getStorageData(); /** 候補 */
   const newAttachStyleList = [];
   storageData.attachStyleList.forEach((obj) => {
     // 指定されたアタッチスタイルの有効/無効状態を変更
@@ -74,12 +74,12 @@ async function changeDisabeled(row) {
   try {
     // 更新されたスタイルリストをストレージに保存
     await setStorage({ attachStyleList: newAttachStyleList });
-    const currentTab = await getCurrentTab();
+    const currentTab = await getCurrentTab(); /** 候補 */
     // 現在のタブにメッセージを送信して、コンテンツスクリプトを更新
     chrome.tabs.sendMessage(currentTab.id, {
       type: "CONTENT",
       action: "UPDATE_ATTACH_STYLE",
-    });
+    });                                       /** 候補 */
   } catch (error) {
     console.error("Error while updating storage or sending message:", error);
   }

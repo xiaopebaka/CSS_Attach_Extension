@@ -10,7 +10,7 @@ chrome.runtime.onMessage.addListener((message) => {
       updateAttachStyle();
     }
   }
-});
+});                                     /** 候補 */
 
 // スタイルを適用する
 async function attachStyle() {
