@@ -8,7 +8,7 @@ chrome.runtime.onMessage.addListener((message) => {
   if (message.action === "UPDATE_ATTACH_STYLE") {
     updateAttachStyle();
   }
-});
+});                                     /** 候補 */
 
 // スタイルを適用する
 async function attachStyle() {
