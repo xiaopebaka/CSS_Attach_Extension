@@ -122,7 +122,7 @@ function getDefaultFaviconUrl(urlPattern) {
     const urlObj = new URL(normalizedPattern);
     return `${urlObj.protocol}//${urlObj.hostname}/favicon.ico`;
   } catch (error) {
-    console.error("URLパターンを通常のURLに変換できませんでした。", error);
+    console.log("URLパターンを通常のURLに変換できませんでした。", error);
     return "";
   }
 }
