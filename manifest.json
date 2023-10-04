@@ -1,22 +1,25 @@
 {
-    "name": "CssAttach Chrome Extension",
-    "description": "特定のURLパスにCSSを当て込む拡張機能",
-    "version": "0.0.1",
-    "manifest_version": 3,
-    "permissions": ["tabs"],
-    "options_page": "options.html",
-    "content_scripts": [
-        {
-            "matches": ["<all_urls>"],
-            "js": ["content.js"]
-        }
-    ],
-    "action": {
-        "default_icon": "images/css_icon.png",
-        "default_popup": "popup.html"
-    },
-    "background": {
-        "service_worker": "background.js",
-        "type": "module"
+  "name": "CSS Attach Chrome Extension",
+  "description": "特定のURLパスにCSSを当て込む拡張機能",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "permissions": ["tabs", "storage"],
+  "options_ui": {
+    "page": "html/options.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/utils.js", "js/content.js"]
     }
+  ],
+  "action": {
+    "default_icon": "images/css_icon.png",
+    "default_popup": "html/popup.html"
+  },
+  "background": {
+    "service_worker": "js/background.js",
+    "type": "module"
+  }
 }

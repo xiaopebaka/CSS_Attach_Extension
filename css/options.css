@@ -1,0 +1,16 @@
+#css {
+  margin-left: 10px;
+  margin-right: 10px;
+}
+#input-area {
+  display: flex;
+}
+
+#attach-style-list li.template {
+  display: none;
+}
+
+#attach-style-list li .icon {
+  max-width: 32px;
+  max-height: 32px;
+}
