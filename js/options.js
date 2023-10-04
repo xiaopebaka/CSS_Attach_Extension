@@ -57,8 +57,9 @@ async function saveAttachStyle() {
   try {
     await setStorage({ attachStyleList: newAttachStyleList });
     window.alert("保存に成功しました。");
-  } catch (e) {
+  } catch (error) {
     window.alert("保存に失敗しました。");
+    console.error(error);
   }
 }
 
@@ -120,8 +121,8 @@ function getDefaultFaviconUrl(urlPattern) {
     normalizedPattern = urlPattern.replace(/^\*:\/\//, "http://");
     const urlObj = new URL(normalizedPattern);
     return `${urlObj.protocol}//${urlObj.hostname}/favicon.ico`;
-  } catch (e) {
-    console.log(e, "URLパターンを通常のURLに変換できませんでした。");
+  } catch (error) {
+    console.error("URLパターンを通常のURLに変換できませんでした。", error);
     return "";
   }
 }

@@ -23,7 +23,6 @@ async function displayAttachStyleList() {
   attachStyleList.forEach((row) => {
     // テンプレートをクローンして新しいリスト項目を作成
     const listItem = template.cloneNode(true);
-    listItem.classList.add("row", "row-" + row.id);
     listItem.classList.remove("template");
 
     // 有効・無効チェックボックスを設定
@@ -77,10 +76,9 @@ async function changeDisabeled(row) {
     const currentTab = await getCurrentTab();
     // 現在のタブにメッセージを送信して、コンテンツスクリプトを更新
     chrome.tabs.sendMessage(currentTab.id, {
-      type: "CONTENT",
-      action: "UPDATE_ATTACH_STYLE",
+      action: "UPDATE_ATTACH_STYLE"
     });
   } catch (error) {
-    console.error("Error while updating storage or sending message:", error);
+    console.error("メッセージの送信に失敗しました。", error);
   }
 }

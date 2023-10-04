@@ -5,10 +5,8 @@ window.addEventListener("load", async function () {
 
 // Chrome拡張機能のメッセージリスナーを追加
 chrome.runtime.onMessage.addListener((message) => {
-  if (message.type === "CONTENT") {
-    if (message.action === "UPDATE_ATTACH_STYLE") {
-      updateAttachStyle();
-    }
+  if (message.action === "UPDATE_ATTACH_STYLE") {
+    updateAttachStyle();
   }
 });
 
