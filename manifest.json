@@ -21,14 +21,5 @@
   "background": {
     "service_worker": "js/background.js",
     "type": "module"
-  },
-  "commands": {
-    "ALL_STYLE_ACTIVATE_SWITCH": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Q",
-        "mac": "Command+Shift+Q"
-      },
-      "description": "表示中タブの全スタイルの適用/解除切り替え"
-    }
   }
 }

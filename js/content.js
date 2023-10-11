@@ -6,12 +6,9 @@ window.addEventListener("load", async function () {
 // Chrome拡張機能のメッセージリスナーを追加
 chrome.runtime.onMessage.addListener((message) => {
   if (message.action === "UPDATE_ATTACH_STYLE") {
-    updateAttachStyle(false);
+    updateAttachStyle();
   }
-  if (message.action === "ALL_STYLE_ACTIVATE_SWITCH") {
-    updateAttachStyle(true);
-  }
-});
+});                                     /** 候補 */
 
 // スタイルを適用する
 async function attachStyle() {
@@ -38,13 +35,7 @@ function insertCSS(stringStyle) {
 }
 
 // 適用するスタイルを更新する
-function updateAttachStyle(switchFlag) {
-  const cssElement = document.querySelector("#css_attach_extension");
-  if(cssElement) {
-    cssElement.remove();
-    if(switchFlag) {
-      return;
-    }
-  }
+function updateAttachStyle() {
+  document.querySelector("#css_attach_extension").remove();
   attachStyle();
 }
