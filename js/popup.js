@@ -61,13 +61,12 @@ async function displayAttachStyleList() {
 async function changeEnabled(row) {
   // ストレージからデータを取得
   const storageData = await getStorageData(); /** 候補 */
-  const newAttachStyleList = [];
-  storageData.attachStyleList.forEach((obj) => {
+  const newAttachStyleList = storageData.attachStyleList.map((obj) => {
     // 指定されたアタッチスタイルの有効/無効状態を変更
     if (obj.id === row.id) {
       obj.isEnable = !obj.isEnable;
     }
-    newAttachStyleList.push(obj);
+    return obj;
   });
 
   try {

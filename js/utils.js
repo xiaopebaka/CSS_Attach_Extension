@@ -4,25 +4,21 @@ async function getStorageData() {
 }
 
 // ストレージに保存する
-function setStorage(data) {
-  return new Promise((resolve, reject) => {
-    chrome.storage.local.set(data, () => {
-      if (chrome.runtime.lastError) {
-        reject(new Error(chrome.runtime.lastError));
-      } else {
-        resolve();
-      }
-    });
-  });
+async function setStorage(data) {
+  try {
+    await chrome.storage.local.set(data);
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 // 現在のURLパスに一致するスタイルのみ抽出する
 async function filterAttachStyleList(attachStyleList) {
+  if (!attachStyleList) return;
+
   const currentTab = await getCurrentTab();
   const matchingPatterns = [];
 
-  if (!attachStyleList) return;
-  
   attachStyleList.forEach((attachStyle) => {
     const regexPattern = new RegExp(attachStyle.url);
     if (regexPattern.test(currentTab.url)) {
@@ -34,15 +30,11 @@ async function filterAttachStyleList(attachStyleList) {
 
 // 現在のアクティブなタブを取得する
 async function getCurrentTab() {
-  return new Promise((resolve, reject) => {
-    chrome.runtime.sendMessage({ action: "GET_CURRENT_TAB" }, (response) => {
-      if (response.error) {
-        reject(new Error(response.error));
-      } else {
-        resolve(response);
-      }
-    });
-  });
+  try {
+    return await chrome.runtime.sendMessage({ action: "GET_CURRENT_TAB" });
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 // UUIDを生成する
