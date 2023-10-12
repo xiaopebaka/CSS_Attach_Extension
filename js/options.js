@@ -5,14 +5,10 @@ window.addEventListener("load", async function () {
 });
 
 // 追加ボタンがクリックされたときのイベントリスナー
-document.querySelector("#add-button").addEventListener("click", function () {
-  addAttachStyle();
-});
+document.querySelector("#add-button").addEventListener("click", addAttachStyle);
 
 // 保存ボタンがクリックされたときのイベントリスナー
-document.querySelector("#save-button").addEventListener("click", function () {
-  saveAttachStyle();
-});
+document.querySelector("#save-button").addEventListener("click", saveAttachStyle);
 
 // スタイルリストに新たなスタイルを追加する関数
 function addAttachStyle() {
@@ -25,7 +21,7 @@ function addAttachStyle() {
 async function saveAttachStyle() {
   const listItems = document.querySelectorAll("#attach-style-list li:not(.template)");
   let newAttachStyleList = [];
-  let saveFlag = true;
+  let doSave = true;
 
   // スタイルデータの数だけ繰り返しストレージ保存用オブジェクトを作成する
   listItems.forEach((list) => {
@@ -35,7 +31,7 @@ async function saveAttachStyle() {
 
     // 入力済みかチェックする
     if (!urlText || !cssText) {
-      saveFlag = false;
+      doSave = false;
       return;
     }
 
@@ -49,7 +45,7 @@ async function saveAttachStyle() {
   });
 
   // 未入力がある場合アラートを表示する
-  if (!saveFlag) {
+  if (!doSave) {
     window.alert("URLまたはCSSが未入力の項目が存在します。");
     return;
   }

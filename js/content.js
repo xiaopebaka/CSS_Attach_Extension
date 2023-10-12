@@ -1,7 +1,5 @@
 // ウィンドウが読み込まれたときのイベントリスナーを設定
-window.addEventListener("load", async function () {
-  attachStyle();
-});
+window.addEventListener("load", attachStyle);
 
 // Chrome拡張機能のメッセージリスナーを追加
 chrome.runtime.onMessage.addListener((message) => {
@@ -15,6 +13,7 @@ async function attachStyle() {
   const storageData = await getStorageData();
 
   const filteredAttachStyleList = await filterAttachStyleList(storageData.attachStyleList);
+  if (!filteredAttachStyleList) return;
   let stringStyle = "";
   filteredAttachStyleList.forEach(function (row) {
     if (row.isEnable) {
@@ -28,7 +27,6 @@ async function attachStyle() {
 function insertCSS(stringStyle) {
   const headerElement = document.querySelector("head");
   const styleElement = document.createElement("style");
-  styleElement.type = "text/css";
   styleElement.id = "css_attach_extension";
   styleElement.textContent = stringStyle;
   headerElement.appendChild(styleElement);
