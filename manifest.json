@@ -5,6 +5,7 @@
   "manifest_version": 3,
   "permissions": ["tabs", "storage"],
   "options_ui": {
+    "// TODO //": "問題2：[ オプションページを指定しよう ] ",
     "page": "html/options.html",
     "open_in_tab": true
   },
@@ -15,6 +16,7 @@
     }
   ],
   "action": {
+    "// TODO //": "問題1：[ 拡張機能にアイコンを設定しよう ] ",
     "default_icon": "images/css_icon.png",
     "default_popup": "html/popup.html"
   },

@@ -1,7 +1,9 @@
 // ウィンドウが読み込まれたときのイベントリスナーを設定
 window.addEventListener("load", attachStyle);
 
-// Chrome拡張機能のメッセージリスナーを追加
+// TODO 問題3：[ ポップアップの有効/無効切り替えで表示中ページのCSS制御しよう ]
+// ・Chrome拡張機能のメッセージリスナーを追加
+// ・メッセージ受信後updateAttachStyle関数呼び出し
 chrome.runtime.onMessage.addListener((message) => {
   if (message.action === "UPDATE_ATTACH_STYLE") {
     updateAttachStyle();

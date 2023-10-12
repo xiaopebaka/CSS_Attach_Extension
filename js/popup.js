@@ -2,6 +2,9 @@
 window.addEventListener("load", function () {
   // オプションページへのリンクがクリックされたときに、オプションページを開く
   document.querySelector("#to_option").addEventListener("click", function () {
+    // TODO 問題2：[ オプションページを指定しよう ]
+    // ・オプションページのリンクを生成
+    // ・オプションページを新しいタブで表示
     window.open(chrome.runtime.getURL("html/options.html"));
   });
 
@@ -73,7 +76,8 @@ async function changeEnabled(row) {
     // 更新されたスタイルリストをストレージに保存
     await setStorage({ attachStyleList: newAttachStyleList });
     const currentTab = await getCurrentTab(); 
-    // 現在のタブにメッセージを送信して、コンテンツスクリプトを更新
+    // TODO 問題3：[ ポップアップの有効/無効切り替えで表示中ページのCSS制御しよう ]
+    //・ 現在のタブにメッセージを送信して、コンテンツスクリプトを更新
     chrome.tabs.sendMessage(currentTab.id, {
       action: "UPDATE_ATTACH_STYLE"
     });
