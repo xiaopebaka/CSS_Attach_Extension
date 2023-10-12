@@ -5,7 +5,7 @@ window.addEventListener("load", function () {
     // TODO 問題2：[ オプションページを指定しよう ]
     // ・オプションページのリンクを生成
     // ・オプションページを新しいタブで表示
-    window.open(chrome.runtime.getURL("html/options.html"));
+
   });
 
   // ストレージから取得したスタイルリストを表示
@@ -78,9 +78,7 @@ async function changeEnabled(row) {
     const currentTab = await getCurrentTab(); 
     // TODO 問題3：[ ポップアップの有効/無効切り替えで表示中ページのCSS制御しよう ]
     //・ 現在のタブにメッセージを送信して、コンテンツスクリプトを更新
-    chrome.tabs.sendMessage(currentTab.id, {
-      action: "UPDATE_ATTACH_STYLE"
-    });
+
   } catch (error) {
     console.error("メッセージの送信に失敗しました。", error);
   }
